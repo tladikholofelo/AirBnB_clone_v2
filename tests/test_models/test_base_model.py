@@ -1,6 +1,6 @@
 #!/usr/bin/python3
-""" """
-from models.base_model import BaseModel
+"""This module defines unittests for models/base_model.py."""
+from models.base_model import BaseModel, Base
 import unittest
 import datetime
 from uuid import UUID
@@ -8,6 +8,7 @@ import json
 import os
 
 
+@unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db', "FileStorage")
 class test_basemodel(unittest.TestCase):
     """ """
 
@@ -16,6 +17,14 @@ class test_basemodel(unittest.TestCase):
         super().__init__(*args, **kwargs)
         self.name = 'BaseModel'
         self.value = BaseModel
+    
+    def test_init(self):
+        """ """
+        self.assertIsInstance(self.value(), BaseModel)
+        if self.value is not BaseModel:
+            self.assertIsInstance(self.value(), Base)
+        else:
+            self.assertNotIsInstance(self.value(), Base)
 
     def setUp(self):
         """ """
@@ -97,3 +106,7 @@ class test_basemodel(unittest.TestCase):
         n = new.to_dict()
         new = BaseModel(**n)
         self.assertFalse(new.created_at == new.updated_at)
+
+
+if __name__ == "__main__":
+    unittest.main()
