@@ -14,7 +14,7 @@ class State(BaseModel):
         name (str): The name of the state.    
     """
     __tablename__ = 'states'
-    if storage_type == 'db':
+    if storage_type != 'db':
         name = Column(String(128), nullable=False)
         cities = relationship('City', backref='state',
                               cascade='all, delete, delete-orphan')
@@ -26,10 +26,8 @@ class State(BaseModel):
         """Returns list of City instances with state_id = current State.id.
         FileStorage relationship between State and City.
         """
-        from models import storage
-        related_cities = []
-        cities = storage.all(City)
-        for city in cities.values():
-            if city.state_id == self.id:
-                related_cities.append(city)
-        return related_cities
+        city_objs = []
+            for city in models.storage.all(City).values():
+                if city.state_id == self.id:
+                    city_objs.append(city)
+            return city_objs
